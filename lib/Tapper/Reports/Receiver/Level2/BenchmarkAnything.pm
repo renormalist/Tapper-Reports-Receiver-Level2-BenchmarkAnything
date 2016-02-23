@@ -4,11 +4,11 @@ package Tapper::Reports::Receiver::Level2::BenchmarkAnything;
 # ABSTRACT: Tapper - Level2 receiver plugin to forward BenchmarkAnything data
 
 use Try::Tiny;
-use Data::DPath 'dpath';
-use Scalar::Util "reftype";
-use Tapper::Model "model";
 use Data::Dumper;
+use Data::DPath 'dpath';
 use Hash::Merge 'merge';
+use Scalar::Util 'reftype';
+use Tapper::Model 'model';
 use Tapper::Config 5.0.2; # 5.0.2 provides {_last_used_tapper_config_file}
 
 =head2 submit
@@ -22,9 +22,13 @@ sub submit
 {
     my ($util, $report, $options) = @_;
 
-    my $benchmark_entries_path       = $options->{benchmark_entries_path};
-    my $additional_metainfo_path     = $options->{additional_metainfo_path};
-    my $store_metainfo_as_benchmarks = $options->{store_metainfo_as_benchmarks};
+    local $Data::Dumper::Pair = ":";
+    local $Data::Dumper::Terse = 2;
+    local $Data::Dumper::Sortkeys = 1;
+
+    my $benchmark_entries_path          = $options->{benchmark_entries_path};
+    my $additional_metainfo_path        = $options->{additional_metainfo_path};
+    my $store_metainfo_as_benchmarks    = $options->{store_metainfo_as_benchmarks};
 
     return unless $benchmark_entries_path;
 
@@ -58,9 +62,6 @@ sub submit
                           $benchmark = merge($benchmark, $metainfo);
                       }
                 }
-              local $Data::Dumper::Pair = ":";
-              local $Data::Dumper::Terse = 2;
-              local $Data::Dumper::Sortkeys = 1;
 
               $util->log->debug("store benchmark: ".Dumper($benchmark));
               $balib->add ({BenchmarkAnythingData => [$benchmark]});
@@ -70,9 +71,6 @@ sub submit
           {
               foreach my $metainfo (@metainfo_entries)
                 {
-                    local $Data::Dumper::Pair = ":";
-                    local $Data::Dumper::Terse = 2;
-                    local $Data::Dumper::Sortkeys = 1;
                     $util->log->debug("store metainfo: ".Dumper($metainfo));
                     $balib->add ({BenchmarkAnythingData => [$metainfo]});
                 }

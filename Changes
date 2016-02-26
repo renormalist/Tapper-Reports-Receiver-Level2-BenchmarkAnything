@@ -1,6 +1,9 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+        - optionally auto-generate metrics about the incoming TAP
+        - utilize BenchmarkAnything's queueing and batch processing
+          for safety and performance
 
 5.0.0     2016-02-19
         - a level2 receiver to handle BenchmarkAnything data

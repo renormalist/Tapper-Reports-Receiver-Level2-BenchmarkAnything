@@ -26,10 +26,6 @@ BenchmarkAnything store.
 sub submit {
   my ($util, $report, $options) = @_;
 
-  local $Data::Dumper::Pair = ":";
-  local $Data::Dumper::Terse = 2;
-  local $Data::Dumper::Sortkeys = 1;
-
   my $benchmark_entries_path          = $options->{benchmark_entries_path};
   my $additional_metainfo_path        = $options->{additional_metainfo_path};
   my $store_metainfo_as_benchmarks    = $options->{store_metainfo_as_benchmarks};
@@ -160,7 +156,15 @@ sub submit {
         $entry->{tapper_reportgroup_arbitrary} ||= $report->reportgrouparbitrary->arbitrary_id if $report->reportgrouparbitrary && $report->reportgrouparbitrary->arbitrary_id;
 
         # debug log
-        $util->log->debug("store benchmark: ".Dumper($entry));
+        {
+          # You MUST localize Data::Dumper settings to strictly ONLY cover
+          # the debug output - otherwise it wrongly serializes the tap_dom
+          # cache into the DB during get_cached_tapdom().
+          local $Data::Dumper::Pair = ":";
+          local $Data::Dumper::Terse = 2;
+          local $Data::Dumper::Sortkeys = 1;
+          $util->log->debug("store benchmark: ".Dumper($entry));
+        }
 
         # actually submit data
         $balib->add ({BenchmarkAnythingData => [$entry]});
@@ -189,7 +193,15 @@ sub submit {
             $entry->{tapper_reportgroup_arbitrary} ||= $report->reportgrouparbitrary->arbitrary_id if $report->reportgrouparbitrary && $report->reportgrouparbitrary->arbitrary_id;
 
             # debug log
-            $util->log->debug("store test metric: ".Dumper($entry));
+            {
+              # You MUST localize Data::Dumper settings to strictly ONLY cover
+              # the debug output - otherwise it wrongly serializes the tap_dom
+              # cache into the DB during get_cached_tapdom().
+              local $Data::Dumper::Pair = ":";
+              local $Data::Dumper::Terse = 2;
+              local $Data::Dumper::Sortkeys = 1;
+              $util->log->debug("store test metric: ".Dumper($entry));
+            }
 
             # actually submit data
             $balib->add ({BenchmarkAnythingData => [$entry]});
@@ -202,7 +214,15 @@ sub submit {
       {
         foreach my $entry (@metainfo_entries)
           {
-            $util->log->debug("store metainfo: ".Dumper($entry));
+            {
+              # You MUST localize Data::Dumper settings to strictly ONLY cover
+              # the debug output - otherwise it wrongly serializes the tap_dom
+              # cache into the DB during get_cached_tapdom().
+              local $Data::Dumper::Pair = ":";
+              local $Data::Dumper::Terse = 2;
+              local $Data::Dumper::Sortkeys = 1;
+              $util->log->debug("store metainfo: ".Dumper($entry));
+            }
             $balib->add ({BenchmarkAnythingData => [$entry]});
             $benchmark_counter++;
           }

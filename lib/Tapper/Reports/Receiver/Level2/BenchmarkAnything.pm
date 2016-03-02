@@ -92,17 +92,24 @@ sub submit {
                                       VALUE => $section->{tap}{summary}{$entry},
                                     };
               }
+            # success ratio
+            my $section_total  = $section->{tap}{summary}{total};
+            my $section_passed = $section->{tap}{summary}{passed};
+            my $section_ratio  = sprintf("%.2f", 100 * ($section_total == 0 ? 0 : $section_passed / $section_total));
+            push @test_metrics, { NAME  => "tap.summary.${metric_name}.success_ratio",
+                                  VALUE => $section_ratio,
+                                };
 
-            # summarize all sections
-            # - bool metrics -
+            # --- summarize all sections ---
+            # - bool metrics
             foreach my $entry (@boolean_aggregation_metrics) {
               $test_metrics_aggregated{$entry} ||= $section->{tap}{summary}{$entry};
             }
-            # - counter metrics -
+            # - counter metrics
             foreach my $entry (@counter_aggregation_metrics) {
               $test_metrics_aggregated{$entry} += ($section->{tap}{summary}{$entry} || 0);
             }
-            # - no textual aggregation -
+            # - no textual aggregations of "PASS"/"FAIL"/etc.
           }
       }
 
@@ -117,7 +124,23 @@ sub submit {
                           };
     }
 
-    $util->log->debug("test metrics: ".Dumper(\@test_metrics));
+    # success ratios
+    my $agg_total  = $test_metrics_aggregated{total};
+    my $agg_passed = $test_metrics_aggregated{passed};
+    my $agg_ratio  = sprintf("%.2f", 100 * ($agg_total == 0 ? 0 : $agg_passed / $agg_total));
+    push @test_metrics, { NAME  => "tap.summary.all.sections.success_ratio",
+                          VALUE => $agg_ratio,
+                        };
+
+    {
+      # You MUST localize Data::Dumper settings to strictly ONLY cover
+      # the debug output - otherwise it wrongly serializes the tap_dom
+      # cache into the DB during get_cached_tapdom().
+      local $Data::Dumper::Pair = ":";
+      local $Data::Dumper::Terse = 2;
+      local $Data::Dumper::Sortkeys = 1;
+      $util->log->debug("test metrics: ".Dumper(\@test_metrics));
+    }
 
     my @benchmark_entries = dpath($benchmark_entries_path)->match($tap_dom);
     @benchmark_entries = @{$benchmark_entries[0]} while $benchmark_entries[0] && reftype $benchmark_entries[0] eq "ARRAY"; # deref all array envelops
@@ -154,6 +177,9 @@ sub submit {
         $entry->{tapper_report} ||= $report->id;
         $entry->{tapper_testrun} ||= $report->reportgrouptestrun->testrun_id if $report->reportgrouptestrun && $report->reportgrouptestrun->testrun_id;
         $entry->{tapper_reportgroup_arbitrary} ||= $report->reportgrouparbitrary->arbitrary_id if $report->reportgrouparbitrary && $report->reportgrouparbitrary->arbitrary_id;
+
+        # mark benchmkars from failed reports (and only them, for space-saving reasons)
+        $entry->{tapper_report_success} = ( $agg_ratio < 100 ? 0 : 1) if !defined $entry->{tapper_report_success};
 
         # debug log
         {

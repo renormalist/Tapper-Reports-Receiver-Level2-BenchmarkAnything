@@ -13,7 +13,7 @@ use Tapper::Config 5.0.2; # 5.0.2 provides {_last_used_tapper_config_file}
 
 # TAP aggregation metrics per type
 our @boolean_aggregation_metrics  = qw(all_passed has_errors has_problems);
-our @counter_aggregation_metrics  = qw(failed parse_errors total passed skipped todo todo_passed wait exit);
+our @counter_aggregation_metrics  = qw(failed parse_errors total passed skipped todo todo_passed);
 our @textual_aggregation_metrics  = qw(status);
 
 =head2 submit

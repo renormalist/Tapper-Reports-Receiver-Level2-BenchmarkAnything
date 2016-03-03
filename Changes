@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+5.0.2     2016-03-03
         - also track TAP success_ratio
         - refactor TAP summary metric names
         - drop 'exit' and 'wait' from attributes

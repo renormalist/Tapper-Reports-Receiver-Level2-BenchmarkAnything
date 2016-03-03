@@ -45,17 +45,17 @@ sub submit {
           {
             $section = $section->{section}{$section_name};
 
-            my $metric_name = $section_name;
-            $metric_name =~ s/\.t$//;
-            $metric_name =~ s/\W+/_/g;
-            $util->log->debug("section metric_name: $metric_name");
+            my $section_metric_name = $section_name;
+            $section_metric_name =~ s/\.t$//;
+            $section_metric_name =~ s/\W+/_/g;
+            $util->log->debug("section_metric_name: $section_metric_name");
 
             # Metric name contemplation:
             # --------------------------
             #
             # There is a decision to make between 1) having
-            # $metric_name as part of the NAME field or 2) having
-            # generic NAMEs with $metric_name as an attribute of
+            # $section_metric_name as part of the NAME field or 2) having
+            # generic NAMEs with $section_metric_name as an attribute of
             # it.
             #
             # Here we make it part of NAME (option 1).
@@ -88,7 +88,7 @@ sub submit {
             #
             foreach my $entry (@boolean_aggregation_metrics, @counter_aggregation_metrics, @textual_aggregation_metrics)
               {
-                push @test_metrics, { NAME  => "tap.summary.${metric_name}.${entry}",
+                push @test_metrics, { NAME  => "tap.summary.section.${section_metric_name}.${entry}",
                                       VALUE => $section->{tap}{summary}{$entry},
                                     };
               }
@@ -96,7 +96,7 @@ sub submit {
             my $section_total  = $section->{tap}{summary}{total};
             my $section_passed = $section->{tap}{summary}{passed};
             my $section_ratio  = sprintf("%.2f", 100 * ($section_total == 0 ? 0 : $section_passed / $section_total));
-            push @test_metrics, { NAME  => "tap.summary.${metric_name}.success_ratio",
+            push @test_metrics, { NAME  => "tap.summary.section.${section_metric_name}.success_ratio",
                                   VALUE => $section_ratio,
                                 };
 

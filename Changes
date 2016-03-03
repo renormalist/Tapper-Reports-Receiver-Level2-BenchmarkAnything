@@ -1,7 +1,10 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+        - also track TAP success_ratio
         - refactor TAP summary metric names
+        - drop 'exit' and 'wait' from attributes
+        - fix Data::Dumper format config which broke tap_dom serialization
 
 5.0.1     2016-02-26
         - optionally auto-generate metrics about the incoming TAP

@@ -118,8 +118,12 @@ sub submit {
     # Note, that with "all.sections" containing a dot and the actual
     # metric names above not containing dots there are no collisions
     # in NAME.
+    my $suite_name = $report->suite->name || "unknown-suite-name";
     foreach my $entry (@boolean_aggregation_metrics, @counter_aggregation_metrics) {
-      push @test_metrics, { NAME  => "tap.summary.all.sections.${entry}",
+      push @test_metrics, { NAME  => "tap.summary.suite.${suite_name}.${entry}",
+                            VALUE => $test_metrics_aggregated{$entry},
+                          };
+      push @test_metrics, { NAME  => "tap.summary.all.${entry}", # same but regardless of actual suite
                             VALUE => $test_metrics_aggregated{$entry},
                           };
     }
@@ -128,7 +132,10 @@ sub submit {
     my $agg_total  = $test_metrics_aggregated{total};
     my $agg_passed = $test_metrics_aggregated{passed};
     my $agg_ratio  = sprintf("%.2f", 100 * ($agg_total == 0 ? 0 : $agg_passed / $agg_total));
-    push @test_metrics, { NAME  => "tap.summary.all.sections.success_ratio",
+    push @test_metrics, { NAME  => "tap.summary.suite.${suite_name}.success_ratio",
+                          VALUE => $agg_ratio,
+                        };
+    push @test_metrics, { NAME  => "tap.summary.all.success_ratio",
                           VALUE => $agg_ratio,
                         };
 

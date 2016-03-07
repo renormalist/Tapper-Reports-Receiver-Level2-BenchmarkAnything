@@ -123,8 +123,9 @@ sub submit {
       push @test_metrics, { NAME  => "tap.summary.suite.${suite_name}.${entry}",
                             VALUE => $test_metrics_aggregated{$entry},
                           };
-      push @test_metrics, { NAME  => "tap.summary.all.${entry}", # same but regardless of actual suite
+      push @test_metrics, { NAME  => "tap.summary.all.${entry}", # same as general metric but with suitename as additional key
                             VALUE => $test_metrics_aggregated{$entry},
+                            tapper_suite_name => $suite_name,
                           };
     }
 
@@ -135,8 +136,9 @@ sub submit {
     push @test_metrics, { NAME  => "tap.summary.suite.${suite_name}.success_ratio",
                           VALUE => $agg_ratio,
                         };
-    push @test_metrics, { NAME  => "tap.summary.all.success_ratio",
+    push @test_metrics, { NAME  => "tap.summary.all.success_ratio", # same as general metric but with suitename as additional key
                           VALUE => $agg_ratio,
+                          tapper_suite_name => $suite_name,
                         };
 
     {

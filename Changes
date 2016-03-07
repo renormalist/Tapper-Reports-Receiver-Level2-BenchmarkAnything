@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+        - aggregated TAP metrics track suitename as additional key
 
 5.0.2     2016-03-03
         - also track TAP success_ratio

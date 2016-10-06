@@ -322,9 +322,9 @@ your C<tapper.cfg>:
    level2:
      BenchmarkAnything:
        # actual benchmark entries
-       benchmark_entries_path: //data/BenchmarkAnythingData
+       benchmark_entries_path: //data/BenchmarkAnythingData/*
        # optional meta info to merge into each chunk of benchmark entries
-       additional_metainfo_path: //data/PlatformDescription
+       additional_metainfo_path: //data/PlatformDescription/*
        # whether that metainfo should also stored into the benchmark store
        store_metainfo_as_benchmarks: 0
        # whether test/TAP summary metrics should also stored into the benchmark store

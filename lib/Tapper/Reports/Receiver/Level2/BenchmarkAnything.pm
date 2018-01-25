@@ -263,15 +263,10 @@ sub submit {
           }
       }
 
-    # process the queue; cleanup processed queue entries; disconnect.
-    #
-    # This might take a while but we are a forked child process anyway
-    # and if we would fail the BenchmarkAnything 'processqueue'
-    # mechnanism is robust and the next child will continue. By
-    # doubling the batch size we process more than we submitted which
-    # should help cleaning up a big pile of data in case of crashes.
-    $balib->process_raw_result_queue(2 * $benchmark_counter);
-    $balib->gc;
+    # Remember: the queue needs to be processed separately! For example
+    # by letting the benchmarkanything-storage-frontend-http daemon
+    # run which contains a processing loop.
+
     $balib->disconnect;
   }
 

@@ -1,6 +1,9 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+        - no longer do process_raw_result_queue() for BenchmarkAnything
+          but require this to be done by the dedicated daemon aka.
+          benchmarkanything-storage-frontend-http
 
 5.0.3     2016-03-11
         - aggregated TAP metrics track suitename as additional key

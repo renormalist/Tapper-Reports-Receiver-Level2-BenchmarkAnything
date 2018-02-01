@@ -263,9 +263,20 @@ sub submit {
           }
       }
 
-    # Remember: the queue needs to be processed separately! For example
-    # by letting the benchmarkanything-storage-frontend-http daemon
-    # run which contains a processing loop.
+    # Remember: the queue needs to be processed separately in *one*
+    # place!
+    #
+    # For example by letting the
+    #   benchmarkanything-storage-frontend-http
+    # daemon run which contains a processing loop.
+    # Or by activating this code here in the Tapper config.
+    #
+    # But only do *ONE* of these options!
+    #
+    if (Tapper::Config->subconfig->{receiver}{level2}{BenchmarkAnything}{process_benchmarkanything_queue}) {
+        $balib->process_raw_result_queue(2 * $benchmark_counter);
+        $balib->gc;
+    }
 
     $balib->disconnect;
   }

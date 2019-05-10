@@ -130,7 +130,7 @@ sub submit {
     }
 
     # success ratios
-    my $agg_total  = $test_metrics_aggregated{total};
+    my $agg_total  = $test_metrics_aggregated{total} || 0;
     my $agg_passed = $test_metrics_aggregated{passed};
     my $agg_ratio  = sprintf("%.2f", 100 * ($agg_total == 0 ? 0 : $agg_passed / $agg_total));
     push @test_metrics, { NAME  => "tap.summary.suite.${suite_name}.success_ratio",

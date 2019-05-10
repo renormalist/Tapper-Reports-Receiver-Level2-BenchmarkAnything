@@ -184,6 +184,7 @@ sub submit {
 
         # additional context info
         $entry->{tapper_report} ||= $report->id;
+        $entry->{tapper_report_created} ||= $report->created_at->strftime('%F %T');
         $entry->{tapper_testrun} ||= $report->reportgrouptestrun->testrun_id if $report->reportgrouptestrun && $report->reportgrouptestrun->testrun_id;
         $entry->{tapper_reportgroup_arbitrary} ||= $report->reportgrouparbitrary->arbitrary_id if $report->reportgrouparbitrary && $report->reportgrouparbitrary->arbitrary_id;
 

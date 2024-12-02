@@ -90,7 +90,7 @@ sub submit {
               {
                 push @test_metrics, { NAME  => "tap.summary.section.${section_metric_name}.${entry}",
                                       VALUE => $section->{tap}{summary}{$entry},
-                                    };
+                                    } if 0;
               }
             # success ratio
             my $section_total  = $section->{tap}{summary}{total};
@@ -98,7 +98,7 @@ sub submit {
             my $section_ratio  = sprintf("%.2f", 100 * ($section_total == 0 ? 0 : $section_passed / $section_total));
             push @test_metrics, { NAME  => "tap.summary.section.${section_metric_name}.success_ratio",
                                   VALUE => $section_ratio,
-                                };
+                                } if 0;
 
             # --- summarize all sections ---
             # - bool metrics
@@ -122,7 +122,7 @@ sub submit {
     foreach my $entry (@boolean_aggregation_metrics, @counter_aggregation_metrics) {
       push @test_metrics, { NAME  => "tap.summary.suite.${suite_name}.${entry}",
                             VALUE => $test_metrics_aggregated{$entry},
-                          };
+                          } if 0;
       push @test_metrics, { NAME  => "tap.summary.all.${entry}", # same as general metric but with suitename as additional key
                             VALUE => $test_metrics_aggregated{$entry},
                             tapper_suite_name => $suite_name,
@@ -135,7 +135,7 @@ sub submit {
     my $agg_ratio  = sprintf("%.2f", 100 * ($agg_total == 0 ? 0 : $agg_passed / $agg_total));
     push @test_metrics, { NAME  => "tap.summary.suite.${suite_name}.success_ratio",
                           VALUE => $agg_ratio,
-                        };
+                        } if 0;
     push @test_metrics, { NAME  => "tap.summary.all.success_ratio", # same as general metric but with suitename as additional key
                           VALUE => $agg_ratio,
                           tapper_suite_name => $suite_name,
@@ -152,7 +152,7 @@ sub submit {
     }
 
     my @benchmark_entries = dpath($benchmark_entries_path)->match($tap_dom);
-    @benchmark_entries = @{$benchmark_entries[0]} while $benchmark_entries[0] && reftype $benchmark_entries[0] eq "ARRAY"; # deref all array envelops
+    @benchmark_entries = @{$benchmark_entries[0]} if $benchmark_entries[0] && reftype $benchmark_entries[0] eq "ARRAY"; # deref all array envelops
 
     my @metainfo_entries = ();
     if ($additional_metainfo_path)

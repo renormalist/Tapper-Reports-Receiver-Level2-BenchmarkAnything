@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+5.0.4     2024-12-02
         - no longer do process_raw_result_queue() for BenchmarkAnything
           but require this to be done by the dedicated daemon aka.
           benchmarkanything-storage-frontend-http
